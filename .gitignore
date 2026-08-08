@@ -1,0 +1,13 @@
+/__pycache__/
+
+/data/**
+!/data/**/
+!/data/**/.gitkeep
+
+/logs/**
+!/logs/**/
+!/logs/**/.gitkeep
+
+/temp/**
+!/temp/**/
+!/temp/**/.gitkeep
