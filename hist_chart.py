@@ -3,17 +3,19 @@ import os
 import sys
 import sqlite3
 import pandas as pd
+from check_db import get_hist_info
 
-sqlite_path = './data/yfinance.db'
-val = os.getenv('sqlite_path')
+sqlite_work = './data/yfinance.db.check'
+val = os.getenv('sqlite_work')
 if val:
-    if val != sqlite_path:
-        print(f'change db_path : {sqlite_path} to {val}')
-        sqlite_path = val
+    if val != sqlite_work:
+        print(f'change db_path : {sqlite_work} to {val}')
+        sqlite_work = val
 else:
-    print(f'db path : default [{sqlite_path}]')
+    print(f'db path : default [{sqlite_work}]')
 
 def prepare_graph():
+    # デフォルトのフォントパスの変更を確認
     change = False
     val = os.getenv('font_path')
     if val:
@@ -24,6 +26,7 @@ def prepare_graph():
     if not change:
         print(f'font path : default [{yft._font_path}]')
 
+    # デフォルトの移動平均（短周期）の変更を確認
     change = False
     val = os.getenv('win_short')
     if val:
@@ -35,7 +38,8 @@ def prepare_graph():
     if not change:
         print(f'ave short : default [{yft._win_short}]')
 
-    hchange = False
+    # デフォルトの移動平均（長周期）の変更を確認
+    change = False
     val = os.getenv('win_long')
     if val:
         val = int(val)
@@ -46,7 +50,8 @@ def prepare_graph():
     if not change:
         print(f'ave long : default [{yft._win_long}]')
 
-    hchange = False
+    # デフォルトのグラフ出力パスの変更を確認
+    change = False
     val = os.getenv('graph_path')
     if val:
         if yft._graph_path != val:
@@ -56,7 +61,8 @@ def prepare_graph():
     if not change:
         print(f'graph path : default [{yft._graph_path}]')
 
-def make_graph(brand_code, brand_name, df):
+def make_graph(brand_code, brand_name, hist_data):
+    df = hist_data[0]
     # 移動平均の計算
     df['MA_short'] = yft.avarage_short(df)
     df['MA_long' ] = yft.avarage_long(df)
@@ -66,30 +72,35 @@ def make_graph(brand_code, brand_name, df):
     # データ数を最少に揃える
     df_plot = yft.adjust_row(df)
     # グラフに出力
-    yft.out_graph(df_plot, brand_code, brand_name)
+    #hist_data[1] = None
+    yft.out_graph(df_plot, brand_code, brand_name, hist_data[1])
 
 def readHistData(brand_code):
     qry = f'select * from hist_{brand_code} order by \"index\" desc limit 365'
     # データベースファイルに接続
-    conn = sqlite3.connect(sqlite_path)
+    conn = sqlite3.connect(sqlite_work)
 
     try:
         # 全履歴データを取得
         df = pd.read_sql(qry, conn)
         df['index'] = pd.to_datetime(df['index'])
         df = df.set_index('index')
-        return df
+        # 履歴の情報を取得
+        cur = conn.cursor()
+        hinf = get_hist_info(cur, brand_code)
+        return [df, hinf]
     finally:
+        cur.close()
         conn.close()
 
 if __name__ == '__main__':
     brand_code = sys.argv[1] 
     brand_name = sys.argv[2]
-    df = readHistData(brand_code)
-    #print(df)
-    #print(df.columns)
-    #print(df.index)
+    r = readHistData(brand_code)
+    #print(r[0])
+    #print(r[0].columns)
+    #print(r[0r[0]index)
     prepare_graph()
-    make_graph(brand_code, brand_name, df)
+    make_graph(brand_code, brand_name, r)
 
 #[EOF]

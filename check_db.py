@@ -35,8 +35,7 @@ def get_brand_info(cur):
     for row in cur:
         yield (row[0], row[1])
 
-def check_03(cur, tno, brand_code, brand_name):
-    print(f'{tno:5} {brand_code}:{brand_name}')
+def get_hist_info(cur, brand_code):
     qry = f"select count(1),min(\"index\"), max(\"index\") from {tname02_pfx}{brand_code}"
     try:
         cur.execute(qry)
@@ -44,19 +43,32 @@ def check_03(cur, tno, brand_code, brand_name):
         recs = row[0]
         dt1  = row[1]
         dt2  = row[2]
-        #print(type(dt2))
         dt1o  = datetime.datetime.strptime(dt1, "%Y-%m-%d")
         dt2o  = datetime.datetime.strptime(dt2, "%Y-%m-%d")
         today = datetime.date.today()
         pdays = count_business_days(dt2o.date(), today)
         ldays = count_business_days(dt1o.date(), dt2o.date())
-        print(f'      pass {pdays} days {dt2} - {dt1}, {recs} days lost {ldays-recs} days')
-        return [pdays]
+        return {'days' : recs,
+                'start': dt1o,
+                'end'  : dt2o,
+                'pass' : pdays,
+                'loss' : ldays-recs}
     except sqlite3.OperationalError as ex:
-        print(f'error : {ex}')
-        return None
+        emsg = f'error : {ex}'
+        return {'error': emsg}
     except Exception as ex:
-        assert False, (f'unexpected error\n{ex}')
+        emsg = f'unexpected error\n{ex}'
+        return {'error': emsg}
+
+def check_03(cur, tno, brand_code, brand_name):
+    print(f'{tno:5} {brand_code}:{brand_name}')
+    r = get_hist_info(cur, brand_code)
+    if 'error' in r:
+        print(r['error'])
+        return None
+    else:
+        print(f'      pass {r['pass']} days {r['start']} - {r['end']}, {r['days']} days lost {r['loss']} days')
+        return [r['pass']]
 
 if __name__ == '__main__':
     db_path = check_01()

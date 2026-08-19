@@ -1,4 +1,5 @@
 export sqlite_path=./data/yfinance.db
+export sqlite_work=./data/yfinance.db.check
 export hist_period=1y
 export db_opt_cmd="-list -noheader"
 export db_opt_csv="-csv"

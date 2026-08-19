@@ -44,7 +44,7 @@ def adjust_row(df):
     # 先頭から最小数に揃える
     return df.iloc[:min_count]
 
-def out_graph(df_plot, brand_code, brand_name):
+def out_graph(df_plot, brand_code, brand_name, hinf=None):
     plt.figure(figsize=(12, 6))
     plt.plot(df_plot.index, df_plot["Close"], label='close')
     plt.plot(df_plot.index, df_plot["MA_short"], label=f'short({_win_short})')
@@ -60,7 +60,10 @@ def out_graph(df_plot, brand_code, brand_name):
     # タイトルの追加
     t1 = f"{brand_name}({brand_code}) 株価チャート"
     now = datetime.datetime.now()
-    t2 = now.strftime('%y-%-m-%-d %H:%M')
+    if hinf is None:
+        t2 = f'出力日時 {now.strftime('%y-%-m-%-d %H:%M')}'
+    else:
+        t2 = f'期間 {hinf['end'].strftime('%y-%-m-%-d')} 〜 {hinf['start'].strftime('%y-%-m-%-d')}'
     plt.title(f'{t1}\n{t2}', y=0.9, fontproperties=_jp_font)
 
     file_name = f"{_graph_path}/chart_{brand_code}.png"

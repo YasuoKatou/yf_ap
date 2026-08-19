@@ -4,7 +4,7 @@ import pandas as pd
 
 import yf_chart.yf_tools as yft
 
-sqlite_path = './data/yfinance.db'
+sqlite_work = './data/yfinance.db.check'
 
 _ana1_cols = ['Close', 'MA_short', 'MA_long']
 _elements = 10
@@ -49,7 +49,7 @@ def calc1(conn, table_name):
 def ana1():
     qry="select name from sqlite_master where type='table' and name like 'hist%' order by name"
     t_num = 0
-    with sqlite3.connect(sqlite_path) as conn:
+    with sqlite3.connect(sqlite_work) as conn:
         drop_hist_ana1_table(conn)
         cur = conn.cursor()
         cur.execute(qry)

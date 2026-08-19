@@ -46,4 +46,5 @@ while IFS=, read brand_code ticker_symbol brand_name; do
 done < $tmp_path
 echo last brand code : $wk_code
 echo $wk_code>$pb_path
+cat $pb_path
 exit 0
