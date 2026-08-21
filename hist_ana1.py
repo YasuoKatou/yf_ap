@@ -25,10 +25,12 @@ def calc1(conn, table_name):
     qry = f'select "index", "Close" from {table_name} order by \"index\" desc limit 50'
     df = pd.read_sql(qry, conn)
     if len(df) < 50:
-        print(f'{table_name} data not enough ({len(df)})')
+        print(f'\n{table_name} data not enough ({len(df)})')
         return None
     df['index'] = pd.to_datetime(df['index'])
     df = df.set_index('index')
+    #print(f'date : {df.index[0]}')
+    last_date = df.index[0]
     df['MA_short'] = yft.avarage_short(df)
     df['MA_long' ] = yft.avarage_long(df)
 
@@ -43,6 +45,7 @@ def calc1(conn, table_name):
     for col in _ana1_cols:
         cols += [f"{col}{i}" for i in range(1, _elements+1)]
     df3.columns = (cols)
+    df3['last_date'] = last_date
 
     return df3
 
@@ -69,13 +72,14 @@ def ana1():
                 conn,
                 if_exists="append",
             )
-            print(f'({t_num})insert into {_hist_tname1} value {tname}')
-            if t_num >= 100:
+            print(f'\r({t_num})insert into {_hist_tname1} value {tname}', end='')
+            if t_num >= 10:
                 # 後工程のため、途中で中断する
                 #break
                 pass
             #print(f'ana1 : {tname}')
         cur.close()
+    print('\nfinished ...')
 
 if __name__ == '__main__':
     ana1()
