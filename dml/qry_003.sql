@@ -1,7 +1,10 @@
 select
   table_name
 , cast(Close1 / Close10 * 1000 as integer) / 1000.0 rt1
-, last_date
+, substr(last_date, 1, 10)
+, case when length(gc_date)>=10 then substr(gc_date, 1, 10)
+       else ''
+  end
 from hist_ana1
 where Close10 < Close1
   and MA_short7 < MA_short10 and MA_short2 < MA_short1

@@ -34,6 +34,17 @@ def calc1(conn, table_name):
     df['MA_short'] = yft.avarage_short(df)
     df['MA_long' ] = yft.avarage_long(df)
 
+    # GC date
+    gc_date = None
+    for idx in range(0, df.count().min()):
+        if df.at[df.index[idx], 'MA_short'] < df.at[df.index[idx], 'MA_long']:
+            if 0 < idx:
+                gc_date = df.index.tolist()[idx-1]
+            break
+        if 30 < idx:
+            # within 30 days
+            break
+
     # 先頭10行を取得して転置
     df2 = df[_ana1_cols].head(_elements).T
 
@@ -46,6 +57,7 @@ def calc1(conn, table_name):
         cols += [f"{col}{i}" for i in range(1, _elements+1)]
     df3.columns = (cols)
     df3['last_date'] = last_date
+    df3['gc_date']   = gc_date
 
     return df3
 
