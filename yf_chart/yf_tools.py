@@ -46,6 +46,9 @@ def adjust_row(df):
 
 def out_graph(df_plot, brand_code, brand_name, hinf=None):
     plt.figure(figsize=(12, 6))
+    # y軸を左右に表示する
+    plt.tick_params(axis='y', labelright=True)
+    # データをプロット
     plt.plot(df_plot.index, df_plot["Close"], label='close')
     plt.plot(df_plot.index, df_plot["MA_short"], label=f'short({_win_short})')
     plt.plot(df_plot.index, df_plot["MA_long"], label=f'long({_win_long})')
