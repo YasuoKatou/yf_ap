@@ -35,7 +35,7 @@ while IFS=, read brand_code ticker_symbol brand_name; do
     # 履歴データを取得し、DBに保存する
     ./hist_read.sh $brand_code $ticker_symbol
     #sleep 10s
-    sleep 5s
+    sleep 3s
     wk_code="$brand_code"
     if [ -e $stp_fpath1 ]; then
 	echo "stop file ${stp_fpath1} found"
