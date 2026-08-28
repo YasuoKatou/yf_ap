@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import os
 
 import jpholiday
 
@@ -46,8 +47,12 @@ def _sub_business_days():
     sub_days = 4
     print(f'base date {start} - {sub_days}days = {sub_business_days(start, sub_days)}')
 
+def get_env_dbwork():
+    return os.getenv('sqlite_work')
+
 if __name__ == '__main__':
     #_count_business_days()
-    _sub_business_days()
+    #_sub_business_days()
+    print(f'sqlite_work : {get_env_dbwork()}')
 
 #[EOF]
