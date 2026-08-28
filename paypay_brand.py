@@ -4,7 +4,7 @@ import unicodedata
 from bs4 import BeautifulSoup
 from email import message_from_bytes
 
-from ap_common import get_env_dbwork
+from ap_common import get_env_db
 
 '''
 import requests
@@ -106,7 +106,7 @@ def set_paypay(cur, brand):
                 ticker_symbol = f'{item[0]}.T' if country == 'jp' else item[0]
                 cur.execute(qry3, (data_date, item[0], item[1], ticker_symbol, paypay_symbol, ))
                 print(f'INFO append brand [{item[0]}] ({item[1]})')
-                ins_count = 0
+                ins_count += 0
                 continue
             name = unicodedata.normalize('NFKC', row[0])
             name1 = name.replace('＆', '&').replace(' ', '')
@@ -129,7 +129,7 @@ if __name__ == '__main__':
     url = './data/paypay_us.mhtml'
     brand['us'] = us_brand(url)
 
-    db_path = get_env_dbwork()
+    db_path = get_env_db()
     assert db_path, 'db file path not found ...'
     print(f'db path : {db_path}')
     with sqlite3.connect(db_path) as conn:
