@@ -106,7 +106,7 @@ def set_paypay(cur, brand):
                 ticker_symbol = f'{item[0]}.T' if country == 'jp' else item[0]
                 cur.execute(qry3, (data_date, item[0], item[1], ticker_symbol, paypay_symbol, ))
                 print(f'INFO append brand [{item[0]}] ({item[1]})')
-                ins_count += 0
+                ins_count += 1
                 continue
             name = unicodedata.normalize('NFKC', row[0])
             name1 = name.replace('＆', '&').replace(' ', '')
