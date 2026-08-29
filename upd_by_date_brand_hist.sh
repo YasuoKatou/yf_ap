@@ -10,8 +10,10 @@ echo DB:$my_db
 while IFS='|' read -r col1 col2 col3; do
     brand_code=${col1:5}
     ymd=${col3:0:4}${col3:5:2}${col3:8:2}
-    if [ "$ymd" != "$1" ]; then
-	continue
+    if [ "ALL" != "$1" ]; then
+    	if [ "$ymd" != "$1" ]; then
+	    continue
+    	fi
     fi
     qry="select ticker_symbol from brand where brand_code='${brand_code}'"
     ticker_symbol=$(sqlite3 $db_opt_cmd $my_db "$qry")
