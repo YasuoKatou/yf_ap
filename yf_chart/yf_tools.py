@@ -44,7 +44,7 @@ def adjust_row(df):
     # 先頭から最小数に揃える
     return df.iloc[:min_count]
 
-def out_graph(df_plot, brand_code, brand_name, hinf=None):
+def out_graph(df_plot, brand_code, brand_name, hinf=None, paypay=None):
     plt.figure(figsize=(12, 6))
     # y軸を左右に表示する
     plt.tick_params(axis='y', labelright=True)
@@ -61,7 +61,8 @@ def out_graph(df_plot, brand_code, brand_name, hinf=None):
     #plt.show()
 
     # タイトルの追加
-    t1 = f"{brand_name}({brand_code}) 株価チャート"
+    info1 = '   (trade paypay)' if paypay is not None else ''
+    t1 = f"{brand_name}({brand_code}) 株価チャート{info1}"
     now = datetime.datetime.now()
     if hinf is None:
         t2 = f'出力日時 {now.strftime('%y-%-m-%-d %H:%M')}'

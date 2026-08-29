@@ -10,8 +10,10 @@ echo DB:$my_db
 while IFS='|' read -r col1 col2 col3 col4; do
     brand_code=${col1:5}
     ymd=${col3:0:4}${col3:5:2}${col3:8:2}
-    if [ "$ymd" != "$1" ]; then
-	continue
+    if [ "ALL" != "$1" ]; then
+    	if [ "$ymd" != "$1" ]; then
+	    continue
+    	fi
     fi
     # 銘柄コードから銘柄を取得
     qry="select brand_name from brand where brand_code='$brand_code'"
