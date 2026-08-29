@@ -1,4 +1,5 @@
 import datetime
+import re
 import sqlite3
 import unicodedata
 from bs4 import BeautifulSoup
@@ -94,9 +95,11 @@ def set_paypay(cur, brand):
     qry2 = 'update brand set paypay = ? where brand_code = ?'
     qry3 = 'insert into brand (data_date, brand_code, brand_name, ticker_symbol, paypay) values (?, ?, ?, ?, ?)'
     paypay_symbol = 'P'
+    name_rep_re = re.compile(r'&|＆|･|・|-|－|　|\s+')
     now = datetime.datetime.now()
     data_date = int(now.strftime('%Y%m%d'))
     for country, brand_info in brand.items():
+        print(f'country : {country}')
         upd_count = 0
         ins_count = 0
         for item in brand_info:
@@ -109,8 +112,8 @@ def set_paypay(cur, brand):
                 ins_count += 1
                 continue
             name = unicodedata.normalize('NFKC', row[0])
-            name1 = name.replace('＆', '&').replace(' ', '')
-            name2 = item[1].replace('＆', '&').replace(' ', '')
+            name1 = re.sub(name_rep_re, '', name)
+            name2 = re.sub(name_rep_re, '', item[1])
             if name1 != name2:
                 print(f'WARN [{item[0]}] name diff [{name}] v.s. [{item[1]}]')
             cur.execute(qry2, (paypay_symbol, item[0], ))
