@@ -73,7 +73,11 @@ def make_graph(brand_code, brand_name, hist_data):
     df_plot = yft.adjust_row(df)
     # グラフに出力
     #hist_data[1] = None
-    yft.out_graph(df_plot, brand_code, brand_name, hist_data[1])
+    yft.out_graph(df_plot, brand_code, brand_name, hist_data[1], hist_data[2])
+
+def get_brand_info(cur, brand_code):
+    cur.execute('select paypay from brand where brand_code = ?', (brand_code, ))
+    return cur.fetchone()[0]
 
 def readHistData(brand_code):
     qry = f'select * from hist_{brand_code} order by \"index\" desc limit 365'
@@ -88,7 +92,8 @@ def readHistData(brand_code):
         # 履歴の情報を取得
         cur = conn.cursor()
         hinf = get_hist_info(cur, brand_code)
-        return [df, hinf]
+        paypay = get_brand_info(cur, brand_code)
+        return [df, hinf, paypay]
     finally:
         cur.close()
         conn.close()
