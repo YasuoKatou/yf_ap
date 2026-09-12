@@ -7,7 +7,7 @@ source ./env.sh
 # 銘柄情報を格納するファイルの接頭辞
 prefix1=brand_all_
 # １回の起動で処理する最大銘柄数
-pmax=100
+pmax=600
 #pmax=10
 # 最後に処理した銘柄コードを保存するファイルのパス
 pb_path=$temp_dir/p_brand_code
