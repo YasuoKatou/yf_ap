@@ -23,6 +23,14 @@ if [ -f $pb_path ]; then
     cond1="where brand_code > '$code'"
 fi
 
+if [ "$1" = 'paypay' ]; then
+    if [ -n "$cond1" ]; then
+        cond1="$cond1 and paypay = 'P'"
+    else
+        cond1="where paypay = 'P'"
+    fi
+fi
+
 tmp_path=$temp_dir/$prefix1$(date "+%Y%m%d%H%M%S").csv
 #echo $tmp_path
 qry="select brand_code, ticker_symbol, brand_name from brand $cond1 order by brand_code limit $pmax"

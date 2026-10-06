@@ -1,6 +1,9 @@
 #!/bin/bash
 source ./env.sh
 
+# 任意の引数（文字列）を取得（省略可能。例: paypay など）
+target_arg="$1"
+
 today=$(date "+%Y%m%d")
 #today=20260728
 echo $today
@@ -27,5 +30,5 @@ next_no=$((max_no + 1))
 tmp="0000000000${next_no}"
 log_path="$log_dir/${log_fn1_pfx}_${today}_${tmp: -3}.log"
 echo "$log_path : next log file"
-echo "./init_all_brand_hist.sh > $log_path 2>&1"
-./init_all_brand_hist.sh > $log_path 2>&1
+echo "./init_all_brand_hist.sh $target_arg > $log_path 2>&1"
+./init_all_brand_hist.sh "$@" > $log_path 2>&1
